@@ -1,63 +1,78 @@
 
 
 1. git init
-2. 设置
-	git config --global user.name "Your Name"
-	git config --global user.email "email@..."
+
+2. 设置查看username和email
+
+  git config user.name
+
+  git config user.email
+
+  git config --global user.name "Your Name"
+  git config --global user.email "email@..."
+
 3. git add file1,file2,file3
+
 4. git commit -m "desc"
+
 5. git status 
-	查看当前状态
+  查看当前状态
+
 6. git diff
-	查看修改内容
+  查看修改内容
+
 7. git log
-	查看git提交记录
-	--pretty=oneline
+  查看git提交记录
+  --pretty=oneline
+
 8. HEAD表示当前版本 HEAD^就是上一个版本 HEAD^^就是上上个版本
+
 9. 回退 git reset --hard HEAD^
+
 10. 回退之后，git log查不到该版本，可以在之前查到的记录里找到对应的commit id
-	git reset --hard commitid(可只写前几位，git会自动去找)
+    git reset --hard commitid(可只写前几位，git会自动去找)
+
 11. git reflog 记录每一次命令
-![](https://i.imgur.com/3HBEzva.png)
+    ![](https://i.imgur.com/3HBEzva.png)
 
 12. 工作区
-	电脑里能看到的目录就是工作区
-	其中的.git目录不算工作区，而是Git的版本库
+    电脑里能看到的目录就是工作区
+    其中的.git目录不算工作区，而是Git的版本库
 
 13. 版本库
-	暂存区：stage（或者叫index）
-	还有git为我们创建的第一个分支master，以及指向master的一个指针叫HEAD
+    暂存区：stage（或者叫index）
+    还有git为我们创建的第一个分支master，以及指向master的一个指针叫HEAD
 
-14.	git diff HEAD -- filename
-	查看工作区和版本库里最新版本的区别
+14. git diff HEAD -- filename
+    查看工作区和版本库里最新版本的区别
 
 15. git checkout -- filename
-	把文件回到最近一次git commit或git add时的状态
+    把文件回到最近一次git commit或git add时的状态
 
 16. git reset HEAD filename
-	把暂存区的修改撤销掉
+    把暂存区的修改撤销掉
 
 17. git rm filename
-	从git中删除文件
+    从git中删除文件
 
 18. 误删
-	git checkout -- filename
+    git checkout -- filename
 
 19. git checkout 其实使用版本库里的版本替换工作区的版本
 
 20. 本地仓库内容推送到GitHub仓库
-	添加远程库
-	git remote add origin(远程库的名字) git@github.com:githubaccount/repname.git
+    添加远程库
+    git remote add origin(远程库的名字) git@github.com:githubaccount/repname.git
 
-	推送本地内容
-	git push -u origin master
-	加上-u参数还会把本地的master分支和远程的master分支关联起来
+    推送本地内容
+    git push -u origin master
+    加上-u参数还会把本地的master分支和远程的master分支关联起来
 
-	现在本地作了提交，就可以通过命令
-	git push origin master把本地master分支的最新修改推送至GitHub
+    现在本地作了提交，就可以通过命令
+    git push origin master把本地master分支的最新修改推送至GitHub
 
 21. 从远程克隆一个本地库
-	git clone git@github.com:githubaccountname/repname.git
+    git clone git@github.com:githubaccountname/repname.git
 
 # 分支管理 #
 1. 创建分支,dev分支（-b表示创建并切换）
@@ -122,6 +137,7 @@
 
 14.rebase
 - 
+
 	rebase操作可以把本地未push的分叉提交历史整理成直线；
 	
 	rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。

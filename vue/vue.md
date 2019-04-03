@@ -445,20 +445,243 @@ nrm use npm选择镜像地址
 
 
 
-# WebPack
+### Vue Render函数
+
+正常使用时，在元素内部增加自定义的模板组件
+
+```html
+<div id="app">
+    <login></login>
+</div>
+```
+
+Render会直接将el:"#app"所定义的元素替换掉
+
+```javascript
+//login组件会直接替换#app对应的元素
+        var login={
+            template:"<h1>登录组件</h1>"
+        }
+
+        var vm=new Vue({
+            el:"#app",
+            render:function(createElement)
+            {
+                return createElement(login);
+            }
+        })
+
+```
+
+
+
+### Vue和Webpack结合开发
+
+```javascript
+//包的查找规则
+//1. 在项目根目录中有没有 node_modules的文件夹
+//2. 在node_modules中根据包名找对应的vue文件夹
+//3. 在vue文件夹中，找一个叫做package.json的包配置文件
+//4. 在package.json文件中，查找一个main属性（main属性指定的这个包在被加载的时候的入口文件）
+import Vue from 'vue'
+var vm=new Vue({})
+```
+
+直接使用，由于vue package.json main对应的是vue-runtime的一个包，功能不全，所有需要重新设置引用
+
+```javascript
+//方法1
+import Vue from '../node_modules/路径'
+
+//方法2
+//在webpack.config.js中添加resolve节点并配置别名
+
+import Vue from 'vue'
+module.exports={
+    entry:'',
+    outpur:{},
+    resolve:{
+        alias:{
+            "vue$":"vue/dist/vue.js"
+        }
+    }
+}
+```
+
+
+
+### .Vue 组件开发
+
+1. **webpack需要安装相关的loader才能解析.vue文件** vue-loader vue-template-compiler
+
+2. 配置文件中新增loader配置项
+
+3. 新增plugin配置
+
+   ```javascript
+   const VueLoaderPlugin = require('vue-loader/lib/plugin')
+   plugins:[
+           new VueLoaderPlugin()
+       ],
+   ```
+
+   
+
+4. 新建.vue模板文件，文件包含三块<template></template><script></script><style></style>
+
+5. 在js中引入模板文件
+
+```javascript
+import login from 'login.vue'
+
+//注册模板
+var vm=new Vue({
+    el:"#app",
+    components:{
+        login
+    }
+})
+```
+
+6. 引用runtime vue时，只能使用render方式使用模板
+
+
+
+### export和export default
+
+一个模块只能通过export default暴露一个数据
+
+可以同时通过export default和export暴露数据
+
+```javascript
+//通过export暴露
+export var title='123'
+export var content='data'
+
+//import引用,而且变量名只能使用title
+import {title,content} from main.js
+//需要用其他名称接收时
+import {title as title123} from main.js
+
+//通过export default暴露
+export default 
+}
+
+//import引用,可以通过任意参数名引用
+import data1 from main.js
+```
+
+### webpack中使用路由
+
+```javascript
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+```
+
+### vue文件定义子组件私有样式（scoped原理）、定义less或者sass属性
+
+```html
+<!--默认会应用到全局,加个scoped就变成私有的了,应用到自己以及子组件-->
+<style scoped>
+
+</style>
+
+<!--普通的style标签默认只支持普通的样式，如果想要启用scss或less，需要为style元素设置lang属性-->
+<style lang='scss' scpoed>
+
+</style>
+```
+
+scoped通过给组件根元素添加data-...属性，然后在style里面通过div[data-...]定义样式来实现
+
+
+
+### 实际开发中，可以将路由组件以及路由变量单独定义在一个js文件中
+
+
+
+### MintUI和MUI
+
+
+
+### Promise
+
+1. Promise代表一个异步操作
+
+2. 每当new一个Promise后，会自动执行内部的异步操作代码
+
+   ```javascript
+   new Promise(function()
+   {    
+   })
+   ```
+
+3. Promise原型的then方法包含两个参数，成功回调，和失败回调，成功的必须传
+
+   ```javascript
+   new Promise(function(){}).then(function(){},function(){})
+   ```
+
+4. 在上一个.then中，返回一个新的promise实例，可以继续使用下一个.then来处理
+
+   ```javascript
+   function getFileByPath(path){
+       return new Promise(function(){
+           //读取文件操作
+       })
+   }
+   
+   
+   getFileByPath('./file/1.txt')
+       .then(function(data){
+       console.log(data)
+       return getFileByPath('./file/2.txt')
+   })
+       .then(function(data){
+       console.log(data)
+       return getFileByPath('./file/3.txt')
+   })
+       .then(function(data){
+       console.log(data)
+   })
+   ```
+
+5. 如果前面的Promise执行失败，我们不想让后续的Promise操作被终止，可以为每个Promise指定失败的回调，在失败的回调中return一个新的Promise
+
+6. 如果前面的then执行失败，不想让后续的then继续执行，可以在最后通过catch捕获失败信息,**不给promise定义失败的回调**，若指定失败回调，下面的then还会执行
+
+   ```javascript
+   .......
+   //最后添加
+       .cathc(function(err){
+           console.log(err.message)
+       })
+   ```
+
+7. jquery ajax也支持promise
+
+   ```javascript
+   $.ajax({
+       url:'',
+       type:'get',
+       dataType:'json'
+   })
+       .then(function(data){
+       console.log(data)
+   })
+   ```
+
+   ### this.$route和this.$router
+
+   this.$route是路由参数对象，所有路由中的参数params query都属于他
+
+   this.$router是一个路由导航对象，用它可以方便的使用js代码实现路由的前进、后退、跳转到新的URL地址
+
+   
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-https://www.bilibili.com/video/av36650577/?p=97
+<https://www.bilibili.com/video/av36650577/?p=176>
